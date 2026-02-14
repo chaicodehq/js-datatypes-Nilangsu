@@ -48,4 +48,48 @@
  */
 export function analyzeUPITransactions(transactions) {
   // Your code here
+  if(!Array.isArray(transactions)||transactions.length===0){
+    return null;
+  }
+  let validTransactions=transactions.filter(txn=>typeof txn==="object"&&txn!==null&& Number.isFinite(txn.amount)&& txn.amount>0 && (txn.type==="credit"||txn.type==="debit"));
+
+  if(validTransactions.length===0){
+    return null;
+  }
+
+  let totalCredit = validTransactions.filter(txn=>txn.type==="credit").reduce((accum,current)=>accum+current.amount,0);
+  let totalDebit=validTransactions.filter(txn=>txn.type==="debit").reduce((accum,current)=>accum+current.amount,0);
+  let netBalance=totalCredit-totalDebit;
+  let transactionCount=validTransactions.length;
+  let totalAmount=validTransactions.reduce((accum,current)=>accum+current.amount,0);
+  let avgTransaction=Math.round(totalAmount/transactionCount);
+
+  let highestTransaction=validTransactions.reduce((accum,current)=>current.amount>accum.amount?current:accum);
+  let categoryBreakdown=transactions.reduce((accum,current)=>{
+    if(accum[current.category]){
+      accum[current.category] = accum[current.category] + current.amount;
+    }else{
+      accum[current.category] = current.amount;
+    }
+    return accum;
+  }, {});
+
+
+  let contactCount=validTransactions.reduce((accum, current)=>{
+    if(accum[current.to]===undefined){
+      accum[current.to]=1;
+    }else{
+      accum[current.to]=accum[current.to]+1;
+    }
+    return accum;
+  }, {});
+
+
+  let frequentContact=Object.entries(contactCount).reduce((accum,current)=>current[1]>accum[1]?current:accum)[0];
+
+  let allAbove100=validTransactions.every(txn=>txn.amount>100);
+  let hasLargeTransaction=validTransactions.some(txn=>txn.amount>=5000);
+
+  return {totalCredit:totalCredit, totalDebit:totalDebit, netBalance:netBalance, transactionCount:transactionCount, avgTransaction:avgTransaction, highestTransaction:{...highestTransaction}, categoryBreakdown:categoryBreakdown, frequentContact:frequentContact,
+    allAbove100:allAbove100, hasLargeTransaction:hasLargeTransaction}
 }

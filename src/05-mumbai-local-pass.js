@@ -43,4 +43,19 @@
  */
 export function generateLocalPass(passenger) {
   // Your code here
+  if(typeof(passenger)!=="object"||passenger===null||!passenger.name||passenger.name===""||!passenger.from||passenger.from===""||!passenger.to||passenger.to===""||!passenger.classType||passenger.classType===""){
+    return "INVALID PASS";
+  }
+  if(passenger.classType.toLowerCase()!=="first"&&passenger.classType.toLowerCase()!=="second"){
+    return "INVALID PASS";
+  }
+  let update={
+    ...passenger,//with this can create a copy from the original one
+    name:passenger.name.toUpperCase(),
+    from: passenger.from.charAt(0).toUpperCase() + passenger.from.slice(1).toLowerCase(),
+    to: passenger.to.charAt(0).toUpperCase() + passenger.to.slice(1).toLowerCase(),
+    classType:passenger.classType.toUpperCase(),
+    passID:(passenger.classType.slice(0,1)+passenger.from.slice(0,3)+passenger.to.slice(0,3)).toUpperCase()
+  }
+  return `MUMBAI LOCAL PASS\n---\nName: ${update.name}\nFrom: ${update.from}\nTo: ${update.to}\nClass: ${update.classType}\nPass ID: ${update.passID}`
 }

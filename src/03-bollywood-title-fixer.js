@@ -31,4 +31,13 @@
  */
 export function fixBollywoodTitle(title) {
   // Your code here
+  if(typeof(title)!=='string'||title.trim().length===0){
+    return ""
+  }
+  let splitTitle=title.toLowerCase().split(' ')
+  let remove=splitTitle.filter(item=>item!=='')
+  let convert=remove.map(item=>item!=="ka"&&item!=="ki"&&item!=="ke"&&item!=="se"&&item!=="aur"&&item!=="ya"&&item!=="the"&&item!=="of"&&item!=="in"&&item!=="a"&&item!=="an"?item.charAt(0).toUpperCase()+item.slice(1):item)
+  let final=convert.join(' ')
+  return final.charAt(0).toUpperCase()+final.slice(1)
 }
+

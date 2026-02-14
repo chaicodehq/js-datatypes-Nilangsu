@@ -40,4 +40,27 @@
  */
 export function parseWhatsAppMessage(message) {
   // Your code here
+  if(typeof(message)!=="string"||!message.includes(" - ")||!message.includes(": ")){
+    return null;
+  }
+
+  let sentiment;
+  let filter=message.split('-');
+  let dateTime=filter[0].split(',')
+  let date=dateTime[0].trim()
+  let time=dateTime[1].trim()
+
+  let firstColon=filter[1].indexOf(':')
+  let sender=filter[1].slice(0,firstColon).trim()
+  let finalMessage=filter[1].slice(firstColon+1).trim()
+  
+  if(finalMessage.includes('😂')||finalMessage.includes(':)')||finalMessage.toLowerCase().includes('haha')){
+    sentiment = "funny";
+  }else if(finalMessage.includes('❤')|finalMessage.includes('love')||finalMessage.   includes('pyaar')){
+    sentiment = "love";
+  }else{
+    sentiment = "neutral";
+  }
+  let wordCount=finalMessage.split(' ').length
+  return {date:date, time:time, sender:sender, text:finalMessage, wordCount:wordCount, sentiment:sentiment}
 }
